@@ -1,0 +1,314 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define Tamanho_tabuleiro 8
+
+int tabuleiroo[Tamanho_tabuleiro][Tamanho_tabuleiro];
+int Tabuleiro_visivel[Tamanho_tabuleiro][Tamanho_tabuleiro];
+
+void iniciar_tabuleiro()
+{
+    // inicializar gerador de números aleatórios
+    srand(time(NULL));
+
+    // inicializar tabuleiro com todos os elementos iguais a zero
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            tabuleiroo[i][j] = 0;
+        }
+    }
+
+    // posicionar o agente na posição (A,1)
+    tabuleiroo[0][0] = 1;
+
+    // posicionar o ouro em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço ou o agente)
+    int ouro_linha = rand() % Tamanho_tabuleiro;
+    int ouro_coluna = rand() % Tamanho_tabuleiro;
+    while (tabuleiroo[ouro_linha][ouro_coluna] != 0)
+    {
+        ouro_linha = rand() % Tamanho_tabuleiro;
+        ouro_coluna = rand() % Tamanho_tabuleiro;
+    }
+    tabuleiroo[ouro_linha][ouro_coluna] = 2;
+
+    // posicionar os poços em posições aleatórias
+    for (int i = 0; i < 5; i++)
+    {
+        int poco_linha = rand() % Tamanho_tabuleiro;
+        int poco_coluna = rand() % Tamanho_tabuleiro;
+        while (tabuleiroo[poco_linha][poco_coluna] != 0)
+        {
+            poco_linha = rand() % Tamanho_tabuleiro;
+            poco_coluna = rand() % Tamanho_tabuleiro;
+        }
+        tabuleiroo[poco_linha][poco_coluna] = 5;
+    }
+
+    // posicionar o monstro em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço ou o agente)
+    int monstro_linha = rand() % Tamanho_tabuleiro;
+    int monstro_coluna = rand() % Tamanho_tabuleiro;
+    while (tabuleiroo[monstro_linha][monstro_coluna] != 0)
+    {
+        monstro_linha = rand() % Tamanho_tabuleiro;
+        monstro_coluna = rand() % Tamanho_tabuleiro;
+    }
+    tabuleiroo[monstro_linha][monstro_coluna] = 3;
+
+    // posicionar a flecha em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço, o agente ou o monstro)
+    int flecha_linha = rand() % Tamanho_tabuleiro;
+    int flecha_coluna = rand() % Tamanho_tabuleiro;
+    while (tabuleiroo[flecha_linha][flecha_coluna] != 0 || (flecha_linha == monstro_linha && flecha_coluna == monstro_coluna))
+    {
+        flecha_linha = rand() % Tamanho_tabuleiro;
+        flecha_coluna = rand() % Tamanho_tabuleiro;
+    }
+    tabuleiroo[flecha_linha][flecha_coluna] = 4;
+
+    // inicializar a matriz Tabuleiro_visivel com todos os elementos iguais a zero
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            Tabuleiro_visivel[i][j] = 0;
+        }
+    }
+
+    // definir as posições visíveis no tabuleiro (posição do agente e posições adjacentes)
+    Tabuleiro_visivel[0][0] = 1;
+    if (ouro_linha == 0 && ouro_coluna == 1)
+    {
+        Tabuleiro_visivel[0][1] = 1;
+    }
+
+    if (monstro_linha == 0 && monstro_coluna == 1)
+    {
+        Tabuleiro_visivel[0][1] = 1;
+    }
+    if (ouro_linha == 1 && ouro_coluna == 0)
+    {
+        Tabuleiro_visivel[1][0] = 1;
+    }
+    if (monstro_linha == 1 && monstro_coluna == 0)
+    {
+        Tabuleiro_visivel[1][0] = 1;
+    }
+}
+
+void mostrar_tabuleiro()
+{
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (Tabuleiro_visivel[i][j] == 1)
+            {
+                switch (tabuleiroo[i][j])
+                {
+                case 0:
+                    printf("#");
+                    break;
+                case 1:
+                    printf("A");
+                    break;
+                case 2:
+                    printf("$");
+                    break;
+                case 3:
+                    printf("M");
+                    break;
+                case 4:
+                    printf("B");
+                    break;
+                case 5:
+                    printf("P");
+                    break;
+                }
+            }
+            else
+            {
+                printf("#");
+            }
+            printf(" ");
+        }
+        printf("\n");
+    }
+}
+
+int mover_agente(char comando)
+{
+    int nova_linha, nova_coluna;
+
+    // encontrar a posição atual do agente na matriz board
+    int agente_linha, agente_coluna;
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 1)
+            {
+                agente_linha = i;
+                agente_coluna = j;
+            }
+        }
+    }
+
+    // calcular a nova posição do agente com base no comando de movimento
+    switch (comando)
+    {
+    case 'N':
+        nova_linha = agente_linha - 1;
+        nova_coluna = agente_coluna;
+        break;
+    case 'S':
+        nova_linha = agente_linha + 1;
+        nova_coluna = agente_coluna;
+        break;
+    case 'W':
+        nova_linha = agente_linha;
+        nova_coluna = agente_coluna - 1;
+        break;
+    case 'E':
+        nova_linha = agente_linha;
+        nova_coluna = agente_coluna + 1;
+        break;
+    default:
+        // comando inválido
+        return 0;
+    }
+
+    // verificar se a nova posição é válida (dentro do tabuleiro)
+    if (nova_linha < 0 || nova_linha >= Tamanho_tabuleiro || nova_coluna < 0 || nova_coluna >= Tamanho_tabuleiro)
+    {
+        return 0;
+    }
+
+    // verificar se a nova posição não contém um poço
+    if (tabuleiroo[nova_linha][nova_coluna] == 5)
+    {
+        printf("\nVocê caiu no poço ):");
+        exit(0);
+    }
+
+    else if (tabuleiroo[nova_linha][nova_coluna] == 3)
+    {
+        printf("\nO monstro te pegou ):");
+        exit(0);
+    }
+
+    if (tabuleiroo[nova_linha][nova_coluna] == 2)
+    {
+        printf("\nVocê achou o ouro!\n");
+    }
+
+    // atualizar a posição do agente na matriz tabuleiroo
+    tabuleiroo[agente_linha][agente_coluna] = 0;
+    tabuleiroo[nova_linha][nova_coluna] = 1;
+
+    // atualizar a matriz Tabuleiro_visivel com as novas posições visíveis
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            Tabuleiro_visivel[i][j] = 0;
+        }
+    }
+    Tabuleiro_visivel[nova_linha][nova_coluna] = 1;
+    if (nova_linha > 0)
+    {
+        Tabuleiro_visivel[nova_linha - 1][nova_coluna] = 1;
+    }
+    if (nova_linha < Tamanho_tabuleiro - 1)
+    {
+        Tabuleiro_visivel[nova_linha + 1][nova_coluna] = 1;
+    }
+    if (nova_coluna > 0)
+    {
+        Tabuleiro_visivel[nova_linha][nova_coluna - 1] = 1;
+    }
+    if (nova_coluna < Tamanho_tabuleiro - 1)
+    {
+        Tabuleiro_visivel[nova_linha][nova_coluna + 1] = 1;
+    }
+
+    return 1;
+}
+
+void mover_monstro() {
+    // encontrar a posição atual do monstro na matriz tabuleiroo
+    int monstro_linha, monstro_coluna;
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 3)
+            {
+                monstro_linha = i;
+                monstro_coluna = j;
+            }
+        }
+    }
+
+    // escolher uma direção aleatória para o movimento do monstro
+    int direcao = rand() % 4; // 0=norte, 1=sul, 2=oeste, 3=leste
+    int nova_linha = monstro_linha;
+    int nova_coluna = monstro_coluna;
+    switch (direcao) {
+        case 0:
+            nova_linha = monstro_linha - 1;
+            break;
+        case 1:
+            nova_linha = monstro_linha + 1;
+            break;
+        case 2:
+            nova_coluna = monstro_coluna - 1;
+            break;
+        case 3:
+            nova_coluna = monstro_coluna + 1;
+            break;
+    }
+
+    // verificar se a nova posição é válida (dentro do tabuleiro)
+    if (nova_linha < 0 || nova_linha >= Tamanho_tabuleiro || nova_coluna < 0 || nova_coluna >= Tamanho_tabuleiro) {
+        return;
+    }
+
+    // verificar se a nova posição não contém um poço ou o agente
+    if (tabuleiroo[nova_linha][nova_coluna] == 5 || tabuleiroo[nova_linha][nova_coluna] == 1) {
+        return;
+    }
+
+    // atualizar a posição do monstro na matriz tabuleiroo
+    tabuleiroo[monstro_linha][monstro_coluna] = 0;
+    tabuleiroo[nova_linha][nova_coluna] = 3;
+}
+
+
+int main()
+{
+    system("chcp 65001 > NUL");
+
+    iniciar_tabuleiro();
+    mostrar_tabuleiro();
+
+    char comando;
+    while (1)
+    {
+        printf("Digite uma direcao para mover o agente (N/S/E/W): ");
+        scanf(" %c", &comando);
+        system("cls");
+        if (!mover_agente(comando))
+        {
+            printf("Movimento invalido\n\n");
+        }
+
+        printf("\nO monstro se movimentou!\n\n");
+        mover_monstro();
+
+        mostrar_tabuleiro();
+    }
+
+    return 0;
+}
