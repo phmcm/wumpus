@@ -312,3 +312,116 @@ int main()
 
     return 0;
 }
+
+//parte do menu incial(tem q ajustar com as funçoes e tal)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main (){
+  int x;
+      printf ("=============================\n");
+      printf ("------O Mundo de Wumpus------\n");
+      printf ("=============================\n");
+      printf ("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n ");
+      scanf ("%d", &x);
+      if (x < 1 || x > 4)
+      do
+    {
+        printf("Opcao invalida, digite outro valor: ");
+        scanf("%d",&x);
+    }while(x < 1 || x > 4);
+    switch(x)
+    {
+        case 1: //opção de Jogar
+         printf("iniciar_tabuleiro()");
+         printf("mostrar_tabuleiro()");
+        break;
+        case 2: //opção de Debug
+          printf("2iniciar_tabuleiro()");// Fazer Versão Debug Mostrando Tudo
+          printf("2mostrar_tabuleiro()");// Fazer Versão Debug Mostrando Tudo
+        break;
+        case 3: //opção Ranking
+          printf("mostrar_ranking()");//criar função que mostra Ranking
+        break;
+        case 4:
+          return 0;// fecha o Jogo
+        break;
+    }
+}
+
+
+
+//código Ranking
+#include <stdio.h>
+
+int main() {
+    FILE *fp;
+    char nome[50];
+    int movimentos;
+    
+    fp = fopen("jogadores.txt", "w"); // cria o arquivo "jogadores.txt"
+    
+    if (fp == NULL) {
+        printf("Erro ao criar o arquivo.\n");
+        return 1;
+    }
+    
+    printf("Digite o nome do jogador e a quantidade de movimentos (separados por espaço).\n");
+    printf("Digite 'fim' no nome para encerrar a entrada.\n");
+    
+    while (1) {
+        scanf("%s", nome);
+        
+        if (strcmp(nome, "fim") == 0) {
+            break;
+        }
+        
+        scanf("%d", &movimentos);
+        
+        fprintf(fp, "%s %d\n", nome, movimentos); // salva o nome e a quantidade de movimentos no arquivo
+    }
+    
+    fclose(fp); // fecha o arquivo
+    
+    return 0;
+}
+
+
+
+//função de Ranking
+#include <stdio.h>
+#include <stdlib.h>
+
+int salvar_jogadores(char* nome_arquivo) {
+    FILE *fp;
+    char nome[50];
+    int movimentos;
+    
+    fp = fopen(nome_arquivo, "w"); // cria o arquivo com o nome especificado
+    
+    if (fp == NULL) {
+        printf("Erro ao criar o arquivo.\n");
+        return 1;
+    }
+    
+    printf("Digite o nome do jogador e a quantidade de movimentos (separados por espaco).\n");
+    printf("Digite 'fim' no nome para encerrar a entrada.\n");
+    
+    while (1) {
+        scanf("%s", nome);
+        
+        if (strcmp(nome, "fim") == 0) {
+            break;
+        }
+        
+        scanf("%d", &movimentos);
+        
+        fprintf(fp, "%s %d\n", nome, movimentos); // salva o nome e a quantidade de movimentos no arquivo
+    }
+    
+    fclose(fp); // fecha o arquivo
+    
+    return 0;
+}
+
+
