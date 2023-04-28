@@ -97,7 +97,8 @@ void iniciar_tabuleiro()
     }
 }
 
-void mostrar_tabuleiro()
+// TABULEIRO NORMAL(TA PRONTO JA)
+/*void mostrar_tabuleiro()
 {
     for (int i = 0; i < Tamanho_tabuleiro; i++)
     {
@@ -105,31 +106,51 @@ void mostrar_tabuleiro()
         {
             if (Tabuleiro_visivel[i][j] == 1)
             {
-                switch (tabuleiroo[i][j])
+                if (tabuleiroo[i][j] == 1)
                 {
-                case 0:
-                    printf("#");
-                    break;
-                case 1:
-                    printf("A");
-                    break;
-                case 2:
-                    printf("$");
-                    break;
-                case 3:
-                    printf("M");
-                    break;
-                case 4:
-                    printf("B");
-                    break;
-                case 5:
-                    printf("P");
-                    break;
+                    printf("A ");
+                }
+                else
+                {
+                    printf("# ");
                 }
             }
             else
             {
+                printf("# ");
+            }
+        }
+        printf("\n");
+    }
+}*/
+
+// TABULEIRO COM DEBUG(TA PRONTO)
+void mostrar_tabuleiroDEBUG()
+{
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            switch (tabuleiroo[i][j])
+            {
+            case 0:
                 printf("#");
+                break;
+            case 1:
+                printf("A");
+                break;
+            case 2:
+                printf("$");
+                break;
+            case 3:
+                printf("M");
+                break;
+            case 4:
+                printf("F");
+                break;
+            case 5:
+                printf("P");
+                break;
             }
             printf(" ");
         }
@@ -202,6 +223,7 @@ int mover_agente(char comando)
     {
         printf("\nVocê achou o ouro!\n");
     }
+
     if (tabuleiroo[nova_linha][nova_coluna] == 4)
     {
         printf("\nVocê achou uma flecha!\n");
@@ -240,7 +262,8 @@ int mover_agente(char comando)
     return 1;
 }
 
-void mover_monstro() {
+void mover_monstro()
+{
     // encontrar a posição atual do monstro na matriz tabuleiroo
     int monstro_linha, monstro_coluna;
     for (int i = 0; i < Tamanho_tabuleiro; i++)
@@ -259,28 +282,43 @@ void mover_monstro() {
     int direcao = rand() % 4; // 0=norte, 1=sul, 2=oeste, 3=leste
     int nova_linha = monstro_linha;
     int nova_coluna = monstro_coluna;
-    switch (direcao) {
-        case 0:
-            nova_linha = monstro_linha - 1;
-            break;
-        case 1:
-            nova_linha = monstro_linha + 1;
-            break;
-        case 2:
-            nova_coluna = monstro_coluna - 1;
-            break;
-        case 3:
-            nova_coluna = monstro_coluna + 1;
-            break;
+    switch (direcao)
+    {
+    case 0:
+        nova_linha = monstro_linha - 1;
+        break;
+    case 1:
+        nova_linha = monstro_linha + 1;
+        break;
+    case 2:
+        nova_coluna = monstro_coluna - 1;
+        break;
+    case 3:
+        nova_coluna = monstro_coluna + 2;
+        break;
+    case 4:
+        nova_linha = monstro_linha + 7;
+        break;
+    case 5:
+        nova_linha = monstro_linha - 4;
+        break;
+    case 6:
+        nova_coluna = monstro_coluna + 5;
+        break;
+    case 7:
+        nova_coluna = monstro_coluna - 4;
+        break;
     }
 
     // verificar se a nova posição é válida (dentro do tabuleiro)
-    if (nova_linha < 0 || nova_linha >= Tamanho_tabuleiro || nova_coluna < 0 || nova_coluna >= Tamanho_tabuleiro) {
+    if (nova_linha < 0 || nova_linha >= Tamanho_tabuleiro || nova_coluna < 0 || nova_coluna >= Tamanho_tabuleiro)
+    {
         return;
     }
 
     // verificar se a nova posição não contém um poço ou o agente
-    if (tabuleiroo[nova_linha][nova_coluna] == 5 || tabuleiroo[nova_linha][nova_coluna] == 1) {
+    if (tabuleiroo[nova_linha][nova_coluna] == 5 || tabuleiroo[nova_linha][nova_coluna] == 1)
+    {
         return;
     }
 
@@ -289,52 +327,51 @@ void mover_monstro() {
     tabuleiroo[nova_linha][nova_coluna] = 3;
 }
 
-
 int main()
 {
     int x;
-      printf ("=============================\n");
-      printf ("------O Mundo de Wumpus------\n");
-      printf ("=============================\n");
-      printf ("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n ");
-      scanf ("%d", &x);
-      if (x < 1 || x > 4)
-      do
-    {
-        printf("Opcao invalida, digite outro valor: ");
-        scanf("%d",&x);
-    }while(x < 1 || x > 4);
-    switch(x)
-    {
-        case 1: //opção de Jogar
-         iniciar_tabuleiro();
-         mostrar_tabuleiro();
-         char comando;
-    while (1)
-    {
-        printf("Digite uma direcao para mover o agente (N/S/E/W): ");
-        scanf(" %c", &comando);
-        system("cls");
-        if (!mover_agente(comando))
+    printf("=============================\n");
+    printf("------O Mundo de Wumpus------\n");
+    printf("=============================\n\n");
+    printf("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n ");
+    scanf("%d", &x);
+    if (x < 1 || x > 4)
+        do
         {
-            printf("Movimento invalido\n\n");
+            printf("Opcao invalida, digite outro valor: ");
+            scanf("%d", &x);
+        } while (x < 1 || x > 4);
+    switch (x)
+    {
+    case 1: // opção de Jogar
+        iniciar_tabuleiro();
+        mostrar_tabuleiroDEBUG();
+        char comando;
+        while (1)
+        {
+            printf("Digite uma direcao para mover o agente (N/S/E/W): ");
+            scanf(" %c", &comando);
+            system("cls");
+            if (!mover_agente(comando))
+            {
+                printf("Movimento invalido\n\n");
+            }
+
+            printf("\nO monstro se movimentou!\n\n");
+            mover_monstro();
+
+            mostrar_tabuleiroDEBUG();
         }
-
-        printf("\nO monstro se movimentou!\n\n");
-        mover_monstro();
-
-        mostrar_tabuleiro();
-    }
         break;
-        case 2: //opção de Debug
-          printf("2iniciar_tabuleiro()");// Fazer Versão Debug Mostrando Tudo
-          printf("2mostrar_tabuleiro()");// Fazer Versão Debug Mostrando Tudo
+    case 2:                             // opção de Debug
+        printf("2iniciar_tabuleiro()"); // Fazer Versão Debug Mostrando Tudo
+        printf("2mostrar_tabuleiro()"); // Fazer Versão Debug Mostrando Tudo
         break;
-        case 3: //opção Ranking
-          printf("mostrar_ranking()");//criar função que mostra Ranking
+    case 3:                          // opção Ranking
+        printf("mostrar_ranking()"); // criar função que mostra Ranking
         break;
-        case 4:
-          return 0;// fecha o Jogo
+    case 4:
+        return 0; // fecha o Jogo
         break;
     }
     system("chcp 65001 > NUL");
@@ -342,7 +379,7 @@ int main()
     return 0;
 }
 
-
+/*
 //código Ranking
 #include <stdio.h>
 
@@ -350,31 +387,31 @@ int main() {
     FILE *fp;
     char nome[50];
     int movimentos;
-    
+
     fp = fopen("jogadores.txt", "w"); // cria o arquivo "jogadores.txt"
-    
+
     if (fp == NULL) {
         printf("Erro ao criar o arquivo.\n");
         return 1;
     }
-    
+
     printf("Digite o nome do jogador e a quantidade de movimentos (separados por espaço).\n");
     printf("Digite 'fim' no nome para encerrar a entrada.\n");
-    
+
     while (1) {
         scanf("%s", nome);
-        
+
         if (strcmp(nome, "fim") == 0) {
             break;
         }
-        
+
         scanf("%d", &movimentos);
-        
+
         fprintf(fp, "%s %d\n", nome, movimentos); // salva o nome e a quantidade de movimentos no arquivo
     }
-    
+
     fclose(fp); // fecha o arquivo
-    
+
     return 0;
 }
 
@@ -388,32 +425,31 @@ int salvar_jogadores(char* nome_arquivo) {
     FILE *fp;
     char nome[50];
     int movimentos;
-    
+
     fp = fopen(nome_arquivo, "w"); // cria o arquivo com o nome especificado
-    
+
     if (fp == NULL) {
         printf("Erro ao criar o arquivo.\n");
         return 1;
     }
-    
+
     printf("Digite o nome do jogador e a quantidade de movimentos (separados por espaco).\n");
     printf("Digite 'fim' no nome para encerrar a entrada.\n");
-    
+
     while (1) {
         scanf("%s", nome);
-        
+
         if (strcmp(nome, "fim") == 0) {
             break;
         }
-        
+
         scanf("%d", &movimentos);
-        
+
         fprintf(fp, "%s %d\n", nome, movimentos); // salva o nome e a quantidade de movimentos no arquivo
     }
-    
+
     fclose(fp); // fecha o arquivo
-    
+
     return 0;
 }
-
-
+*/
