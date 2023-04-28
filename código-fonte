@@ -292,12 +292,24 @@ void mover_monstro() {
 
 int main()
 {
-    system("chcp 65001 > NUL");
-
-    iniciar_tabuleiro();
-    mostrar_tabuleiro();
-
-    char comando;
+    int x;
+      printf ("=============================\n");
+      printf ("------O Mundo de Wumpus------\n");
+      printf ("=============================\n");
+      printf ("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n ");
+      scanf ("%d", &x);
+      if (x < 1 || x > 4)
+      do
+    {
+        printf("Opcao invalida, digite outro valor: ");
+        scanf("%d",&x);
+    }while(x < 1 || x > 4);
+    switch(x)
+    {
+        case 1: //opção de Jogar
+         iniciar_tabuleiro();
+         mostrar_tabuleiro();
+         char comando;
     while (1)
     {
         printf("Digite uma direcao para mover o agente (N/S/E/W): ");
@@ -313,32 +325,6 @@ int main()
 
         mostrar_tabuleiro();
     }
-
-    return 0;
-}
-
-//parte do menu incial(tem q ajustar com as funçoes e tal)
-#include <stdio.h>
-#include <stdlib.h>
-
-int main (){
-  int x;
-      printf ("=============================\n");
-      printf ("------O Mundo de Wumpus------\n");
-      printf ("=============================\n");
-      printf ("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n ");
-      scanf ("%d", &x);
-      if (x < 1 || x > 4)
-      do
-    {
-        printf("Opcao invalida, digite outro valor: ");
-        scanf("%d",&x);
-    }while(x < 1 || x > 4);
-    switch(x)
-    {
-        case 1: //opção de Jogar
-         printf("iniciar_tabuleiro()");
-         printf("mostrar_tabuleiro()");
         break;
         case 2: //opção de Debug
           printf("2iniciar_tabuleiro()");// Fazer Versão Debug Mostrando Tudo
@@ -351,8 +337,10 @@ int main (){
           return 0;// fecha o Jogo
         break;
     }
-}
+    system("chcp 65001 > NUL");
 
+    return 0;
+}
 
 
 //código Ranking
