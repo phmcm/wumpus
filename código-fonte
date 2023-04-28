@@ -202,6 +202,10 @@ int mover_agente(char comando)
     {
         printf("\nVocê achou o ouro!\n");
     }
+    if (tabuleiroo[nova_linha][nova_coluna] == 4)
+    {
+        printf("\nVocê achou uma flecha!\n");
+    }
 
     // atualizar a posição do agente na matriz tabuleiroo
     tabuleiroo[agente_linha][agente_coluna] = 0;
