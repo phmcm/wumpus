@@ -41,7 +41,7 @@ void iniciar_tabuleiro()
     {
         int poco_linha = rand() % Tamanho_tabuleiro;
         int poco_coluna = rand() % Tamanho_tabuleiro;
-        while (tabuleiroo[poco_linha][poco_coluna] != 0 && tabuleiroo[poco_linha][poco_coluna] != 2  && tabuleiroo[poco_linha][poco_coluna] != 3)
+        while (tabuleiroo[poco_linha][poco_coluna] != 0 && tabuleiroo[poco_linha][poco_coluna] != 2 && tabuleiroo[poco_linha][poco_coluna] != 3)
         {
             poco_linha = rand() % Tamanho_tabuleiro;
             poco_coluna = rand() % Tamanho_tabuleiro;
@@ -52,7 +52,7 @@ void iniciar_tabuleiro()
     // posicionar o monstro em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço ou o agente)
     int monstro_linha = rand() % Tamanho_tabuleiro;
     int monstro_coluna = rand() % Tamanho_tabuleiro;
-    while (tabuleiroo[monstro_linha][monstro_coluna] != 0 && tabuleiroo[monstro_linha][monstro_coluna] != 5  && tabuleiroo[monstro_linha][monstro_coluna] != 2   && tabuleiroo[monstro_linha][monstro_coluna] != 4)
+    while (tabuleiroo[monstro_linha][monstro_coluna] != 0 && tabuleiroo[monstro_linha][monstro_coluna] != 5 && tabuleiroo[monstro_linha][monstro_coluna] != 2 && tabuleiroo[monstro_linha][monstro_coluna] != 4)
     {
         monstro_linha = rand() % Tamanho_tabuleiro;
         monstro_coluna = rand() % Tamanho_tabuleiro;
@@ -62,7 +62,7 @@ void iniciar_tabuleiro()
     // posicionar a flecha em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço, o agente ou o monstro)
     int flecha_linha = rand() % Tamanho_tabuleiro;
     int flecha_coluna = rand() % Tamanho_tabuleiro;
-    while (tabuleiroo[flecha_linha][flecha_coluna] != 0 && tabuleiroo[flecha_linha][flecha_coluna] != 3 && tabuleiroo[flecha_linha][flecha_coluna] != 5  && tabuleiroo[flecha_linha][flecha_coluna] != 2)
+    while (tabuleiroo[flecha_linha][flecha_coluna] != 0 && tabuleiroo[flecha_linha][flecha_coluna] != 3 && tabuleiroo[flecha_linha][flecha_coluna] != 5 && tabuleiroo[flecha_linha][flecha_coluna] != 2)
     {
         flecha_linha = rand() % Tamanho_tabuleiro;
         flecha_coluna = rand() % Tamanho_tabuleiro;
@@ -233,8 +233,6 @@ int mover_agente(char comando)
         flecha = 1;
     }
 
-   
-
     // atualizar a posição do agente na matriz tabuleiroo
     tabuleiroo[agente_linha][agente_coluna] = 0;
     tabuleiroo[nova_linha][nova_coluna] = 1;
@@ -285,7 +283,7 @@ void mover_monstro()
     }
 
     // escolher uma direção aleatória para o movimento do monstro
-    int direcao = rand() % 4; // 0=norte, 1=sul, 2=oeste, 3=leste
+    int direcao = rand() % 8; // 0=norte, 1=sul, 2=oeste, 3=leste
     int nova_linha = monstro_linha;
     int nova_coluna = monstro_coluna;
     switch (direcao)
@@ -323,14 +321,21 @@ void mover_monstro()
     }
 
     // verificar se a nova posição não contém um poço ou o agente
-    if (tabuleiroo[nova_linha][nova_coluna] == 5 || tabuleiroo[nova_linha][nova_coluna] == 1)
+    if (tabuleiroo[nova_linha][nova_coluna] == 5)
     {
         return;
     }
 
+    if (tabuleiroo[nova_linha][nova_coluna] == 1)
+    {
+        printf("O monstro te pegou.");
+        exit(0);
+    }
+    
     // atualizar a posição do monstro na matriz tabuleiroo
     tabuleiroo[monstro_linha][monstro_coluna] = 0;
     tabuleiroo[nova_linha][nova_coluna] = 3;
+      printf("\nO monstro se movimentou!\n\n");
 }
 
 // TESTESSSSSS
@@ -350,7 +355,6 @@ void mensagem_campeao()
         }
     }
 }
-
 
 void mensagem()
 {
@@ -433,7 +437,7 @@ int main()
                 printf("\n\nVocê está com o ouro!");
             }
 
-             if (flecha == 1)
+            if (flecha == 1)
             {
                 printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
             }
@@ -446,7 +450,7 @@ int main()
                 printf("Movimento invalido.\n\n");
             }
 
-            printf("\nO monstro se movimentou!\n\n");
+          
             mover_monstro();
 
             mostrar_tabuleiroDEBUG();
