@@ -233,11 +233,7 @@ int mover_agente(char comando)
         flecha = 1;
     }
 
-    if (Tabuleiro_visivel[0][0] && encontrou_ouro == 1)
-{
-    printf("\nVocê ganhou o jogo! Parabéns!\n");
-    exit(0);
-}
+   
 
     // atualizar a posição do agente na matriz tabuleiroo
     tabuleiroo[agente_linha][agente_coluna] = 0;
@@ -338,6 +334,23 @@ void mover_monstro()
 }
 
 // TESTESSSSSS
+void mensagem_campeao()
+{
+    int agente_linha, agente_coluna;
+    // Encontrar a posição do agente no tabuleiro
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[0][0] && encontrou_ouro == 1)
+            {
+                printf("voce ganhou.");
+                exit(0);
+            }
+        }
+    }
+}
+
 
 void mensagem()
 {
@@ -438,6 +451,7 @@ int main()
 
             mostrar_tabuleiroDEBUG();
             mensagem();
+            mensagem_campeao();
         }
         break;
     case 2:                             // opção de Debug
