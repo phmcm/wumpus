@@ -6,6 +6,8 @@
 
 int tabuleiroo[Tamanho_tabuleiro][Tamanho_tabuleiro];
 int Tabuleiro_visivel[Tamanho_tabuleiro][Tamanho_tabuleiro];
+int encontrou_ouro;
+int flecha;
 
 void iniciar_tabuleiro()
 {
@@ -27,7 +29,7 @@ void iniciar_tabuleiro()
     // posicionar o ouro em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço ou o agente)
     int ouro_linha = rand() % Tamanho_tabuleiro;
     int ouro_coluna = rand() % Tamanho_tabuleiro;
-    while (tabuleiroo[ouro_linha][ouro_coluna] != 0)
+    while (tabuleiroo[ouro_linha][ouro_coluna] != 0 && tabuleiroo[ouro_linha][ouro_coluna] != 1 && tabuleiroo[ouro_linha][ouro_coluna] != 5 && tabuleiroo[ouro_linha][ouro_coluna] != 4)
     {
         ouro_linha = rand() % Tamanho_tabuleiro;
         ouro_coluna = rand() % Tamanho_tabuleiro;
@@ -39,7 +41,7 @@ void iniciar_tabuleiro()
     {
         int poco_linha = rand() % Tamanho_tabuleiro;
         int poco_coluna = rand() % Tamanho_tabuleiro;
-        while (tabuleiroo[poco_linha][poco_coluna] != 0)
+        while (tabuleiroo[poco_linha][poco_coluna] != 0 && tabuleiroo[poco_linha][poco_coluna] != 2  && tabuleiroo[poco_linha][poco_coluna] != 3)
         {
             poco_linha = rand() % Tamanho_tabuleiro;
             poco_coluna = rand() % Tamanho_tabuleiro;
@@ -50,7 +52,7 @@ void iniciar_tabuleiro()
     // posicionar o monstro em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço ou o agente)
     int monstro_linha = rand() % Tamanho_tabuleiro;
     int monstro_coluna = rand() % Tamanho_tabuleiro;
-    while (tabuleiroo[monstro_linha][monstro_coluna] != 0)
+    while (tabuleiroo[monstro_linha][monstro_coluna] != 0 && tabuleiroo[monstro_linha][monstro_coluna] != 5  && tabuleiroo[monstro_linha][monstro_coluna] != 2   && tabuleiroo[monstro_linha][monstro_coluna] != 4)
     {
         monstro_linha = rand() % Tamanho_tabuleiro;
         monstro_coluna = rand() % Tamanho_tabuleiro;
@@ -60,7 +62,7 @@ void iniciar_tabuleiro()
     // posicionar a flecha em uma posição aleatória (não pode ser colocada em uma posição que já contenha um poço, o agente ou o monstro)
     int flecha_linha = rand() % Tamanho_tabuleiro;
     int flecha_coluna = rand() % Tamanho_tabuleiro;
-    while (tabuleiroo[flecha_linha][flecha_coluna] != 0 || (flecha_linha == monstro_linha && flecha_coluna == monstro_coluna))
+    while (tabuleiroo[flecha_linha][flecha_coluna] != 0 && tabuleiroo[flecha_linha][flecha_coluna] != 3 && tabuleiroo[flecha_linha][flecha_coluna] != 5  && tabuleiroo[flecha_linha][flecha_coluna] != 2)
     {
         flecha_linha = rand() % Tamanho_tabuleiro;
         flecha_coluna = rand() % Tamanho_tabuleiro;
@@ -222,12 +224,20 @@ int mover_agente(char comando)
     if (tabuleiroo[nova_linha][nova_coluna] == 2)
     {
         printf("\nVocê achou o ouro!\n");
+        encontrou_ouro = 1;
     }
 
     if (tabuleiroo[nova_linha][nova_coluna] == 4)
     {
         printf("\nVocê achou uma flecha!\n");
+        flecha = 1;
     }
+
+    if (Tabuleiro_visivel[0][0] && encontrou_ouro == 1)
+{
+    printf("\nVocê ganhou o jogo! Parabéns!\n");
+    exit(0);
+}
 
     // atualizar a posição do agente na matriz tabuleiroo
     tabuleiroo[agente_linha][agente_coluna] = 0;
@@ -329,12 +339,16 @@ void mover_monstro()
 
 // TESTESSSSSS
 
-void mensagem() {
+void mensagem()
+{
     int agente_linha, agente_coluna;
     // Encontrar a posição do agente no tabuleiro
-    for (int i = 0; i < Tamanho_tabuleiro; i++) {
-        for (int j = 0; j < Tamanho_tabuleiro; j++) {
-            if (tabuleiroo[i][j] == 1) {
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 1)
+            {
                 agente_linha = i;
                 agente_coluna = j;
             }
@@ -342,12 +356,16 @@ void mensagem() {
     }
 
     // Verificar a posição do agente em relação ao poço
-    for (int i = 0; i < Tamanho_tabuleiro; i++) {
-        for (int j = 0; j < Tamanho_tabuleiro; j++) {
-            if (tabuleiroo[i][j] == 5) {
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 5)
+            {
                 int distancia_linha = abs(i - agente_linha);
                 int distancia_coluna = abs(j - agente_coluna);
-                if (distancia_linha + distancia_coluna == 1) {
+                if (distancia_linha + distancia_coluna == 1)
+                {
                     printf("\n\nCuidado pra não cair!\n");
                     return;
                 }
@@ -356,12 +374,16 @@ void mensagem() {
     }
 
     // Verificar a posição do agente em relação ao monstro
-    for (int i = 0; i < Tamanho_tabuleiro; i++) {
-        for (int j = 0; j < Tamanho_tabuleiro; j++) {
-            if (tabuleiroo[i][j] == 3) {
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 3)
+            {
                 int distancia_linha = abs(i - agente_linha);
                 int distancia_coluna = abs(j - agente_coluna);
-                if (distancia_linha + distancia_coluna == 1) {
+                if (distancia_linha + distancia_coluna == 1)
+                {
                     printf("\n\nOlha o bixo papão ein!\n");
                     return;
                 }
@@ -370,20 +392,19 @@ void mensagem() {
     }
 }
 
-
-
 int main()
 {
+    system("chcp 65001 > NUL");
     int x;
     printf("=============================\n");
     printf("------O Mundo de Wumpus------\n");
     printf("=============================\n\n");
-    printf("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n ");
+    printf("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\nSua escolha:");
     scanf("%d", &x);
     if (x < 1 || x > 4)
         do
         {
-            printf("Opcao invalida, digite outro valor: ");
+            printf("\nOpcao invalida, digite outro valor:");
             scanf("%d", &x);
         } while (x < 1 || x > 4);
     switch (x)
@@ -394,12 +415,22 @@ int main()
         char comando;
         while (1)
         {
-            printf("Digite uma direcao para mover o agente (N/S/E/W): ");
+            if (encontrou_ouro == 1)
+            {
+                printf("\n\nVocê está com o ouro!");
+            }
+
+             if (flecha == 1)
+            {
+                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
+            }
+            printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
             scanf(" %c", &comando);
             system("cls");
+
             if (!mover_agente(comando))
             {
-                printf("Movimento invalido\n\n");
+                printf("Movimento invalido.\n\n");
             }
 
             printf("\nO monstro se movimentou!\n\n");
@@ -420,7 +451,6 @@ int main()
         return 0; // fecha o Jogo
         break;
     }
-    system("chcp 65001 > NUL");
 
     return 0;
 }
