@@ -100,7 +100,7 @@ void iniciar_tabuleiro()
 }
 
 // TABULEIRO NORMAL(TA PRONTO JA)
-/*void mostrar_tabuleiro()
+ void mostrar_tabuleiro()
 {
     for (int i = 0; i < Tamanho_tabuleiro; i++)
     {
@@ -124,7 +124,7 @@ void iniciar_tabuleiro()
         }
         printf("\n");
     }
-}*/
+}
 
 // TABULEIRO COM DEBUG(TA PRONTO)
 void mostrar_tabuleiroDEBUG()
@@ -331,7 +331,7 @@ void mover_monstro()
         printf("O monstro te pegou.");
         exit(0);
     }
-    
+	    
     // atualizar a posição do monstro na matriz tabuleiroo
     tabuleiroo[monstro_linha][monstro_coluna] = 0;
     tabuleiroo[nova_linha][nova_coluna] = 3;
@@ -341,7 +341,6 @@ void mover_monstro()
 // TESTESSSSSS
 void mensagem_campeao()
 {
-    int agente_linha, agente_coluna;
     // Encontrar a posição do agente no tabuleiro
     for (int i = 0; i < Tamanho_tabuleiro; i++)
     {
@@ -428,9 +427,41 @@ int main()
     {
     case 1: // opção de Jogar
         iniciar_tabuleiro();
-        mostrar_tabuleiroDEBUG();
+        mostrar_tabuleiro();
         char comando;
         while (1)
+        {
+            if (encontrou_ouro == 1)
+            {
+                printf("\n\nVocê está com o ouro!");
+            }
+
+            if (flecha == 1)
+            {
+                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
+            }
+            printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
+            scanf(" %c", &comando);
+            system("cls");
+
+            if (!mover_agente(comando))
+            {
+                printf("Movimento invalido.\n\n");
+            }
+
+          
+            mover_monstro();
+
+            mostrar_tabuleiro();
+            mensagem();
+            mensagem_campeao();
+        }
+        break;
+    case 2:						// opção de Debug
+		iniciar_tabuleiro();
+        mostrar_tabuleiroDEBUG();
+        
+        while (2)
         {
             if (encontrou_ouro == 1)
             {
@@ -456,11 +487,7 @@ int main()
             mostrar_tabuleiroDEBUG();
             mensagem();
             mensagem_campeao();
-        }
-        break;
-    case 2:                             // opção de Debug
-        printf("2iniciar_tabuleiro()"); // Fazer Versão Debug Mostrando Tudo
-        printf("2mostrar_tabuleiro()"); // Fazer Versão Debug Mostrando Tudo
+		}
         break;
     case 3:                          // opção Ranking
         printf("mostrar_ranking()"); // criar função que mostra Ranking
@@ -471,7 +498,9 @@ int main()
     }
 
     return 0;
+
 }
+
 
 /*
 //código Ranking
