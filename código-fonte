@@ -384,7 +384,7 @@ int main()
             }
             if (flecha == 1)
             {
-                printf("\nVocê tem uma Flecha. Use com responsabilidade!");
+                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
             }
             printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
             scanf(" %c", &comando);
@@ -414,7 +414,7 @@ int main()
 
             if (flecha == 1)
             {
-                printf("\nVocê tem uma Flecha. Use com responsabilidade!");
+                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
             }
             printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
             scanf(" %c", &comando);
