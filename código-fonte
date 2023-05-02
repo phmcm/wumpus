@@ -340,20 +340,27 @@
 	}
 	// TESTESSSSSS
 	void mensagem_campeao()
-	{
-	// Encontrar a posição do agente no tabuleiro
-	for (int i = 0; i < Tamanho_tabuleiro; i++)
-	{
-	for (int j = 0; j < Tamanho_tabuleiro; j++)
-	{
-	if (tabuleiroo[0][0] && encontrou_ouro == 1)
-	{
-	printf("voce ganhou.");
-	exit(0);
-	}
-	}
-	}
-	}
+{
+    // Encontrar a posição do agente no tabuleiro
+    int agente_linha, agente_coluna;
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 1)
+            {
+                agente_linha = i;
+                agente_coluna = j;
+            }
+        }
+    }
+
+   if (encontrou_ouro && agente_linha == 0 && agente_coluna == 0) {
+    printf("\n\nVoce ganhou!\n");
+    exit(0);
+}
+
+}
 	void mensagem()
 	{
 	int agente_linha, agente_coluna;
