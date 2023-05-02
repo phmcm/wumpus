@@ -380,11 +380,11 @@ int main()
         {
             if (encontrou_ouro == 1)
             {
-                printf("\n\nVocê está com o ouro. FUGA!");
+                printf("\nVocê está com o ouro. FUGA!");
             }
             if (flecha == 1)
             {
-                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
+                printf("\nVocê tem uma Flecha. Use com responsabilidade!");
             }
             printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
             scanf(" %c", &comando);
@@ -409,12 +409,12 @@ int main()
         {
             if (encontrou_ouro == 1)
             {
-                printf("\n\nVocê está com o ouro. FUJA!");
+                printf("\nVocê está com o ouro. FUJA!");
             }
 
             if (flecha == 1)
             {
-                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
+                printf("\nVocê tem uma Flecha. Use com responsabilidade!");
             }
             printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
             scanf(" %c", &comando);
