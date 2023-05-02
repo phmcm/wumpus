@@ -3,6 +3,8 @@
 #include <time.h>
 #include <string.h>
 
+
+#define MAX_NOME 50
 #define Tamanho_tabuleiro 8
 
 int tabuleiroo[Tamanho_tabuleiro][Tamanho_tabuleiro];
@@ -69,7 +71,6 @@ void iniciar_tabuleiro()
     tabuleiroo[flecha_linha][flecha_coluna] = 4;
 }
 
-
 // TABULEIRO NORMAL(TA PRONTO JA)
 void mostrar_tabuleiro()
 {
@@ -130,7 +131,12 @@ void mostrar_tabuleiroDEBUG()
         printf("\n");
     }
 }
-
+int atirarFlecha(int x, int y, int inimigo_x, int inimigo_y)
+{
+    if (monstroPerto(x, y))
+        return (x == inimigo_x) || (y == inimigo_y);
+    return 0;
+}
 int mover_agente(char comando)
 {
     int nova_linha, nova_coluna;
@@ -201,83 +207,155 @@ int mover_agente(char comando)
     // atualizar a posição do agente na matriz tabuleiroo
     tabuleiroo[agente_linha][agente_coluna] = 0;
     tabuleiroo[nova_linha][nova_coluna] = 1;
+    return 0;
 }
-void mover_monstro()
+void mover_monstro(int *nova_linha, int *nova_coluna)
 {
     // encontrar a posição atual do monstro na matriz tabuleiroo
-    int monstro_linha, monstro_coluna;
     for (int i = 0; i < Tamanho_tabuleiro; i++)
     {
         for (int j = 0; j < Tamanho_tabuleiro; j++)
         {
             if (tabuleiroo[i][j] == 3)
             {
-                monstro_linha = i;
-                monstro_coluna = j;
+                *nova_linha = i;
+                *nova_coluna = j;
             }
         }
     }
     // escolher uma direção aleatória para o movimento do monstro
-    int direcao = rand() % 8; // 0=norte, 1=sul, 2=oeste, 3=leste
-    int nova_linha = monstro_linha;
-    int nova_coluna = monstro_coluna;
+    int direcao = rand() % 7; // 0=norte, 1=sul, 2=oeste, 3=leste
+    int temp_linha = *nova_linha;
+    int temp_coluna = *nova_coluna;
     switch (direcao)
     {
     case 0:
-        nova_linha = monstro_linha - 1;
+        *nova_linha -= 1;
         break;
     case 1:
-        nova_linha = monstro_linha + 1;
+        *nova_linha += 1;
         break;
     case 2:
-        nova_coluna = monstro_coluna - 1;
+        *nova_coluna -= 1;
         break;
     case 3:
-        nova_coluna = monstro_coluna + 2;
+        *nova_coluna += 2;
         break;
     case 4:
-        nova_linha = monstro_linha + 7;
+        *nova_linha += 7;
         break;
     case 5:
-        nova_linha = monstro_linha - 4;
+        *nova_linha -= 4;
         break;
     case 6:
-        nova_coluna = monstro_coluna + 5;
+        *nova_coluna += 5;
         break;
     case 7:
-        nova_coluna = monstro_coluna - 4;
+        *nova_coluna -= 4;
         break;
     }
     // verificar se a nova posição é válida (dentro do tabuleiro)
-    if (nova_linha < 0 || nova_linha >= Tamanho_tabuleiro || nova_coluna < 0 || nova_coluna >= Tamanho_tabuleiro)
+    if (temp_linha < 0 || temp_linha >= Tamanho_tabuleiro || temp_coluna < 0 || temp_coluna >= Tamanho_tabuleiro)
     {
         return;
     }
 
-    if (tabuleiroo[nova_linha][nova_coluna] == 5)
+    if (tabuleiroo[temp_linha][temp_coluna] == 5)
     {
         return;
     }
-    if (tabuleiroo[nova_linha][nova_coluna] == 2)
+    if (tabuleiroo[temp_linha][temp_coluna] == 2)
     {
         return;
     }
-    if (tabuleiroo[nova_linha][nova_coluna] == 4)
+    if (tabuleiroo[temp_linha][temp_coluna] == 4)
     {
         return;
     }
-    if (tabuleiroo[nova_linha][nova_coluna] == 1)
+    if (tabuleiroo[temp_linha][temp_coluna] == 1)
     {
         printf("O monstro te pegou \xF0\x9F\x98\xA2.");
         exit(0);
     }
     // atualizar a posição do monstro na matriz tabuleiroo
-    tabuleiroo[monstro_linha][monstro_coluna] = 0;
-    tabuleiroo[nova_linha][nova_coluna] = 3;
+    tabuleiroo[*nova_linha][*nova_coluna] = 0;
+    tabuleiroo[temp_linha][temp_coluna] = 3;
     printf("\nO monstro se movimentou!\n\n");
 }
+int monstroPerto(int *agente_linha, int *agente_coluna)
+{
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 3)
+            {
+                int distancia_linha = abs(i - *agente_linha);
+                int distancia_coluna = abs(j - *agente_coluna);
+                return (distancia_linha + distancia_coluna == 1);
+            }
+        }
+    }
+    return 0;
+}
+typedef struct {
+    char nome[MAX_NOME];
+    int movimentos;
+} Jogador;
+
+int compara_jogadores(const void *a, const void *b) {
+    const Jogador *ja = (const Jogador*) a;
+    const Jogador *jb = (const Jogador*) b;
+    return (ja->movimentos - jb->movimentos);
+}
+
+void grava_partida(int movimentos) {
+    FILE *arquivo;
+    Jogador jogador;
+    int n_jogadores = 0, i;
+
+    printf("Fim da partida! Você fez %d movimentos.\n", movimentos);
+    printf("Digite seu nome: ");
+    scanf("%s", jogador.nome);
+    jogador.movimentos = movimentos;
+
+    // Abre o arquivo no modo "a" (append)
+    arquivo = fopen("partida.txt", "a");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        exit(1);
+    }
+
+    // Escreve o novo jogador no arquivo
+    fwrite(&jogador, sizeof(Jogador), 1, arquivo);
+
+    // Conta o número de jogadores já registrados no arquivo
+    fseek(arquivo, 0, SEEK_END);
+    n_jogadores = ftell(arquivo) / sizeof(Jogador);
+
+    // Ordena os jogadores em ordem crescente de movimentos
+    Jogador *jogadores = (Jogador*) malloc(n_jogadores * sizeof(Jogador));
+    rewind(arquivo);
+    for (i = 0; i < n_jogadores; i++) {
+        fread(&jogadores[i], sizeof(Jogador), 1, arquivo);
+    }
+    qsort(jogadores, n_jogadores, sizeof(Jogador), compara_jogadores);
+
+    // Reescreve o arquivo com a lista de jogadores ordenada
+    rewind(arquivo);
+    for (i = 0; i < n_jogadores; i++) {
+        fwrite(&jogadores[i], sizeof(Jogador), 1, arquivo);
+    }
+
+    // Fecha o arquivo e libera a memória alocada
+    fclose(arquivo);
+    free(jogadores);
+
+    printf("Dados gravados com sucesso!\n");
+}
+
 // TESTESSSSSS
-void mensagem_campeao()
+void mensagem_campeao(int mov)
 {
     // Encontrar a posição do agente no tabuleiro
     int agente_linha, agente_coluna;
@@ -297,14 +375,14 @@ void mensagem_campeao()
     {
         system("cls");
         printf("\n\nParabéns, você conseguiu escapar com o ouro. \n\nAgora você já pode se matricular na cadeira de AED1 👍\n");
+        grava_partida(mov);
 
-        exit(0);
     }
 }
 
-void mensagem()
+
+void mensagem(int *agente_linha, int *agente_coluna)
 {
-    int agente_linha, agente_coluna;
     // Encontrar a posição do agente no tabuleiro
     for (int i = 0; i < Tamanho_tabuleiro; i++)
     {
@@ -312,8 +390,8 @@ void mensagem()
         {
             if (tabuleiroo[i][j] == 1)
             {
-                agente_linha = i;
-                agente_coluna = j;
+                *agente_linha = i;
+                *agente_coluna = j;
             }
         }
     }
@@ -324,8 +402,8 @@ void mensagem()
         {
             if (tabuleiroo[i][j] == 5)
             {
-                int distancia_linha = abs(i - agente_linha);
-                int distancia_coluna = abs(j - agente_coluna);
+                int distancia_linha = abs(i - *agente_linha);
+                int distancia_coluna = abs(j - *agente_coluna);
                 if (distancia_linha + distancia_coluna == 1)
                 {
                     printf("\nCuidado pra não cair!\n");
@@ -341,11 +419,11 @@ void mensagem()
         {
             if (tabuleiroo[i][j] == 3)
             {
-                int distancia_linha = abs(i - agente_linha);
-                int distancia_coluna = abs(j - agente_coluna);
+                int distancia_linha = abs(i - *agente_linha);
+                int distancia_coluna = abs(j - *agente_coluna);
                 if (distancia_linha + distancia_coluna == 1)
                 {
-                    printf("\nOlha o bixo papão ein!\n");
+                    printf("\nOlha o bixo papão hein!\n");
                     return;
                 }
             }
@@ -355,9 +433,9 @@ void mensagem()
 int main()
 {
     system("chcp 65001 > NUL");
-    int x, movimentos;
-    char nome[50];
-    FILE *fp;
+    int x, acao,mov;
+    char tiro;
+    int nova_linha, nova_coluna, agente_linha, agente_coluna;
     printf("=============================\n");
     printf("------O Mundo de Wumpus------\n");
     printf("=============================\n\n");
@@ -394,10 +472,11 @@ int main()
             {
                 printf("Movimento invalido.\n\n");
             }
-            mover_monstro();
+            mov++;
+            mover_monstro(&nova_linha, &nova_coluna);
             mostrar_tabuleiro();
-            mensagem();
-            mensagem_campeao();
+            mensagem(&agente_linha, &agente_coluna);
+            mensagem_campeao(mov);
         }
         break;
     case 2: // opção de Debug
@@ -416,18 +495,46 @@ int main()
             {
                 printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
             }
-            printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
-            scanf(" %c", &comando);
-            system("cls");
-            if (!mover_agente(comando))
+            printf("\n\nO que deseja fazer:\n1-Andar\n2-Atirar a flecha\n");
+            scanf("%d", &acao);
+            switch (acao)
             {
-                printf("Movimento invalido.\n\n");
+            case 1:
+                printf("\n\nDigite uma direcao para mover o agente (N/S/E/W):");
+                scanf(" %c", &comando);
+                system("cls");
+                if (!mover_agente(comando))
+                {
+                    printf("Movimento invalido.\n\n");
+                }
+                mov++;
+                break;
+            case 2:
+                if (flecha != 1)
+                {
+                    system("cls");
+                    printf("Você não possui uma flecha");
+                }
+                else
+                {
+                    system("cls");
+                    if (atirarFlecha(agente_linha, agente_coluna, nova_linha, nova_coluna))
+                    {
+                        printf("Você Matou o Monstro!");
+                    }
+                    else
+                    {
+                        printf("Você errou");
+                    }
+                    flecha = 0;
+                }
+                break;
             }
-            mover_monstro();
-
+            comando = ' ';
+            mover_monstro(&nova_linha, &nova_coluna);
             mostrar_tabuleiroDEBUG();
-            mensagem();
-            mensagem_campeao();
+            mensagem(&agente_linha, &agente_coluna);
+            mensagem_campeao(mov);
         }
         break;
     case 3: // opção Ranking
@@ -441,39 +548,8 @@ int main()
     return 0;
 }
 
-// função de Ranking
-/*#include <stdio.h>
-#include <stdlib.h>
 
-int salvar_jogadores(char* nome_arquivo) {
-    FILE *fp;
-    char nome[50];
-    int movimentos;
 
-    fp = fopen(nome_arquivo, "w"); // cria o arquivo com o nome especificado
-
-    if (fp == NULL) {
-        printf("Erro ao criar o arquivo.\n");
-        return 1;
-    }
-
-    printf("Digite o nome do jogador e a quantidade de movimentos (separados por espaco).\n");
-    printf("Digite 'fim' no nome para encerrar a entrada.\n");
-
-    while (1) {
-        scanf("%s", nome);
-
-        if (strcmp(nome, "fim") == 0) {
-            break;
-        }
-
-        scanf("%d", &movimentos);
-
-        fprintf(fp, "%s %d\n", nome, movimentos); // salva o nome e a quantidade de movimentos no arquivo
-    }
-
-    fclose(fp); // fecha o arquivo
-
-    return 0;
-}
-*/
+FALTA ARRUMAR OS WHILE
+TERMINAR O TIRO DA FLECHA E O MENU FINAL
+ABRIR O ARQUIVO DO RANKING
