@@ -102,44 +102,30 @@
 	
 	// TABULEIRO NORMAL(TA PRONTO JA)
 	void mostrar_tabuleiro()
-	{
-	for (int i = 0; i < Tamanho_tabuleiro; i++)
-	{
-	for (int j = 0; j < Tamanho_tabuleiro; j++)
-	{
-	if (Tabuleiro_visivel[i][j] == 1)
-	{
-	switch (tabuleiroo[i][j])
-	{
-	case 0:
-	printf("#");
-	break;
-	case 1:
-	printf("A");
-	break;
-	case 2:
-	printf("$");
-	break;
-	case 3:
-	printf("M");
-	break;
-	case 4:
-	printf("B");
-	break;
-	case 5:
-	printf("P");
-	break;
-	}
-	}
-	else
-	{
-	printf("#");
-	}
-	printf(" ");
-	}
-	printf("\n");
-	}
-	}
+{
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (Tabuleiro_visivel[i][j] == 1)
+            {
+                if (tabuleiroo[i][j] == 1)
+                {
+                    printf("A ");
+                }
+                else
+                {
+                    printf("# ");
+                }
+            }
+            else
+            {
+                printf("# ");
+            }
+        }
+        printf("\n");
+    }
+}
 	
 	// TABULEIRO COM DEBUG(TA PRONTO)
 	void mostrar_tabuleiroDEBUG()
