@@ -409,7 +409,7 @@ int main()
         {
             if (encontrou_ouro == 1)
             {
-                printf("\n\nVocê está com o ouro!");
+                printf("\n\nVocê está com o ouro. FUJA!");
             }
 
             if (flecha == 1)
