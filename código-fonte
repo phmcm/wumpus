@@ -175,7 +175,7 @@ void mover_agente()
 
     // solicitar a posição destino ao usuário
     char posicao_destino[3];
-    printf("Digite a posicao destino (exemplo: A2): ");
+    printf("\n\nDigite a posicao destino (exemplo: A2): ");
     scanf("%s", posicao_destino);
 
     // converter a string em coordenadas na matriz
@@ -323,16 +323,16 @@ int compara_jogadores(const void *a, const void *b)
     return (ja->movimentos - jb->movimentos);
 }
 
-void grava_partida(int movimentos)
+void grava_partida(int mov)
 {
     FILE *arquivo;
     Jogador jogador;
     int n_jogadores = 0, i;
 
-    printf("Fim da partida! Você fez %d movimentos.\n", movimentos);
+    printf("Fim da partida! Você fez %d movimentos.\n", mov);
     printf("Digite seu nome: ");
     scanf("%s", jogador.nome);
-    jogador.movimentos = movimentos;
+    jogador.movimentos = mov;
 
     // Abre o arquivo no modo "a" (append)
     arquivo = fopen("partida.txt", "a");
