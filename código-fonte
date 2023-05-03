@@ -533,10 +533,17 @@ int main()
                 printf("\nVocê está com o ouro. FUJA!\n\n");
             }
 
-            if (flecha == 1)
-            {
-                printf("\nVocê tem uma Flecha. Use com responsabilidade!\n\n");
-            }
+             if (flecha == 1)
+    {
+        printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
+        scanf(" %c", &tiro);
+        if (tiro == 'S' || tiro == 's')
+        {
+            atirar_flecha();
+            flecha = 0;
+            printf("\nFlecha usada!");
+        }
+    }
         }
         break;
     case 2: // opção de Debug
