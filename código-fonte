@@ -294,6 +294,55 @@ void mover_monstro(int *nova_linha, int *nova_coluna)
     printf("\nO monstro se movimentou!\n\n");
 }
 
+
+
+
+
+void atirar_flecha()
+{
+    if (flecha == 0) {
+        printf("\nVoce nao tem mais flechas!\n");
+        return;
+    }
+
+    char coluna;
+    int linha;
+    printf("Digite a posicao para onde quer atirar (ex: A1): ");
+    scanf(" %c%d", &coluna, &linha);
+    linha--; // ajuste para utilizar o índice do array
+
+    // converter a letra da coluna para o índice correspondente do array
+    int coluna_index = coluna - 'A';
+
+    // verificar se a posição está adjacente ao agente
+    int agente_linha, agente_coluna;
+    for (int i = 0; i < Tamanho_tabuleiro; i++)
+    {
+        for (int j = 0; j < Tamanho_tabuleiro; j++)
+        {
+            if (tabuleiroo[i][j] == 1) {
+                agente_linha = i;
+                agente_coluna = j;
+                break;
+            }
+        }
+    }
+    if (linha < agente_linha - 1 || linha > agente_linha + 1 || coluna_index < agente_coluna - 1 || coluna_index > agente_coluna + 1) {
+        printf("A flecha so pode ser atirada em uma posicao adjacente ao agente!\n");
+        return;
+    }
+
+    // verificar se a posição tem o monstro
+    if (tabuleiroo[linha][coluna_index] == 3) {
+        printf("\nParabens! Voce matou o monstro!\n");
+        tabuleiroo[linha][coluna_index] = 0; // remover o monstro do tabuleiro
+        encontrou_ouro = 1;
+    } else {
+        printf("\nVoce errou o disparo! O monstro ainda esta vivo.\n");
+    }
+    flecha--;
+}
+
 int monstroPerto(int *agente_linha, int *agente_coluna)
 {
     for (int i = 0; i < Tamanho_tabuleiro; i++)
@@ -508,10 +557,17 @@ int main()
                 printf("\nVocê está com o ouro. FUJA!");
             }
 
-            if (flecha == 1)
-            {
-                printf("\n\nVocê tem uma Flecha. Use com responsabilidade!");
-            }
+             if (flecha == 1)
+    {
+        printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
+        scanf(" %c", &tiro);
+        if (tiro == 'S' || tiro == 's')
+        {
+            atirar_flecha();
+            flecha = 0;
+            printf("\nFlecha usada!");
+        }
+    }
 
         }
         break;
@@ -525,7 +581,3 @@ int main()
     }
     return 0;
 }
-
-/*FALTA ARRUMAR OS WHILE
-TERMINAR O TIRO DA FLECHA E O MENU FINAL
-ABRIR O ARQUIVO DO RANKING*/
