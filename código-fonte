@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 
+#define MAX_PLAYERS 100
 #define MAX_NOME 50
 #define Tamanho_tabuleiro 8
 
@@ -79,7 +80,6 @@ void mostrar_tabuleiro()
     for (int j = 0; j < Tamanho_tabuleiro; j++)
     {
         printf("%c ", 'A' + j);
-        
     }
     printf("\n");
     for (int i = 0; i < Tamanho_tabuleiro; i++)
@@ -99,7 +99,6 @@ void mostrar_tabuleiro()
         printf("\n");
     }
 }
-
 
 // TABULEIRO COM DEBUG(TA PRONTO)
 void mostrar_tabuleiroDEBUG()
@@ -145,14 +144,6 @@ void mostrar_tabuleiroDEBUG()
     }
 }
 
-
-/*int atirarFlecha(int x, int y, int inimigo_x, int inimigo_y)
-{
-    if (monstroPerto(x, y))
-        return (x == inimigo_x) || (y == inimigo_y);
-    return 0;
-}*/
-
 void mover_agente()
 {
     int agente_linha = 0;
@@ -192,12 +183,12 @@ void mover_agente()
     if (tabuleiroo[nova_linha][nova_coluna] == 5)
     {
         printf("\n\nVocê caiu no poço! Eu falei para você tomar cuidado 😠\n\n");
-        exit(0);
+        inicioMenu();
     }
     else if (tabuleiroo[nova_linha][nova_coluna] == 3)
     {
         printf("\nO monstro te pegou ):\n\n");
-        exit(0);
+        inicioMenu();
     }
     if (tabuleiroo[nova_linha][nova_coluna] == 2)
     {
@@ -218,15 +209,68 @@ void mover_agente()
         tabuleiroo[agente_linha][agente_coluna] = 0;
         tabuleiroo[nova_linha][nova_coluna] = 1;
         printf("Agente movido para a posicao %s\n", posicao_destino);
-        mov ++;
+        mov++;
     }
     else
     {
         printf("Posicao invalida! O agente so pode se mover para posicoes adjacentes.\n");
     }
-    
 }
+void inicioMenu()
+{
+    int choice = 0;
+    int x, mov = 0;
+    char tiro;
+    int nova_linha, nova_coluna, agente_linha, agente_coluna;
+    while (choice != 1 && choice != 2)
+    {
+        printf("Escolha uma opcao:\n");
+        printf("1. Jogar novamente\n");
+        printf("2. Sair do jogo\n");
+        printf("Opcao: ");
+        scanf("%d", &choice);
+        if (choice != 1 && choice != 2)
+        {
+            printf("Opcao invalida. Tente novamente.\n");
+        }
+    }
 
+    if (choice == 1)
+    {
+        printf("\n");
+        iniciar_tabuleiro();
+        mostrar_tabuleiro();
+
+        while (1)
+        {
+            mover_agente();
+            mover_monstro(&nova_linha, &nova_coluna);
+            mostrar_tabuleiro();
+            mensagem(&agente_linha, &agente_coluna);
+            mensagem_campeao(mov);
+            if (encontrou_ouro == 1)
+            {
+                printf("\nVocê está com o ouro. FUJA!\n\n");
+            }
+
+            if (flecha == 1)
+            {
+                printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
+                scanf(" %c", &tiro);
+                if (tiro == 'S' || tiro == 's')
+                {
+                    atirar_flecha();
+                    flecha = 0;
+                    printf("\nFlecha usada!");
+                }
+            }
+        }
+    }
+    else
+    {
+        exit(0);
+    }
+}
 
 void mover_monstro(int *nova_linha, int *nova_coluna)
 {
@@ -294,13 +338,10 @@ void mover_monstro(int *nova_linha, int *nova_coluna)
     printf("\nO monstro se movimentou!\n\n");
 }
 
-
-
-
-
 void atirar_flecha()
 {
-    if (flecha == 0) {
+    if (flecha == 0)
+    {
         printf("\nVoce nao tem mais flechas!\n");
         return;
     }
@@ -320,111 +361,39 @@ void atirar_flecha()
     {
         for (int j = 0; j < Tamanho_tabuleiro; j++)
         {
-            if (tabuleiroo[i][j] == 1) {
+            if (tabuleiroo[i][j] == 1)
+            {
                 agente_linha = i;
                 agente_coluna = j;
                 break;
             }
         }
     }
-    if (linha < agente_linha - 1 || linha > agente_linha + 1 || coluna_index < agente_coluna - 1 || coluna_index > agente_coluna + 1) {
+    if (linha < agente_linha - 1 || linha > agente_linha + 1 || coluna_index < agente_coluna - 1 || coluna_index > agente_coluna + 1)
+    {
         printf("A flecha so pode ser atirada em uma posicao adjacente ao agente!\n");
         return;
     }
 
     // verificar se a posição tem o monstro
-    if (tabuleiroo[linha][coluna_index] == 3) {
+    if (tabuleiroo[linha][coluna_index] == 3)
+    {
         printf("\nParabens! Voce matou o monstro!\n");
         tabuleiroo[linha][coluna_index] = 0; // remover o monstro do tabuleiro
         encontrou_ouro = 1;
-    } else {
+    }
+    else
+    {
         printf("\nVoce errou o disparo! O monstro ainda esta vivo.\n");
     }
     flecha--;
 }
 
-int monstroPerto(int *agente_linha, int *agente_coluna)
-{
-    for (int i = 0; i < Tamanho_tabuleiro; i++)
-    {
-        for (int j = 0; j < Tamanho_tabuleiro; j++)
-        {
-            if (tabuleiroo[i][j] == 3)
-            {
-                int distancia_linha = abs(i - *agente_linha);
-                int distancia_coluna = abs(j - *agente_coluna);
-                return (distancia_linha + distancia_coluna == 1);
-            }
-        }
-    }
-    return 0;
-}
-typedef struct
-{
-    char nome[MAX_NOME];
-    int movimentos;
-} Jogador;
-
-int compara_jogadores(const void *a, const void *b)
-{
-    const Jogador *ja = (const Jogador *)a;
-    const Jogador *jb = (const Jogador *)b;
-    return (ja->movimentos - jb->movimentos);
-}
-
-void grava_partida(int mov)
-{
-    FILE *arquivo;
-    Jogador jogador;
-    int n_jogadores = 0, i;
-
-    printf("Fim da partida! Você fez %d movimentos.\n", mov);
-    printf("Digite seu nome: ");
-    scanf("%s", jogador.nome);
-    jogador.movimentos = mov;
-
-    // Abre o arquivo no modo "a" (append)
-    arquivo = fopen("partida.txt", "a");
-    if (arquivo == NULL)
-    {
-        printf("Erro ao abrir o arquivo!\n");
-        exit(1);
-    }
-
-    // Escreve o novo jogador no arquivo
-    fwrite(&jogador, sizeof(Jogador), 1, arquivo);
-
-    // Conta o número de jogadores já registrados no arquivo
-    fseek(arquivo, 0, SEEK_END);
-    n_jogadores = ftell(arquivo) / sizeof(Jogador);
-
-    // Ordena os jogadores em ordem crescente de movimentos
-    Jogador *jogadores = (Jogador *)malloc(n_jogadores * sizeof(Jogador));
-    rewind(arquivo);
-    for (i = 0; i < n_jogadores; i++)
-    {
-        fread(&jogadores[i], sizeof(Jogador), 1, arquivo);
-    }
-    qsort(jogadores, n_jogadores, sizeof(Jogador), compara_jogadores);
-
-    // Reescreve o arquivo com a lista de jogadores ordenada
-    rewind(arquivo);
-    for (i = 0; i < n_jogadores; i++)
-    {
-        fwrite(&jogadores[i], sizeof(Jogador), 1, arquivo);
-    }
-
-    // Fecha o arquivo e libera a memória alocada
-    fclose(arquivo);
-    free(jogadores);
-
-    printf("Dados gravados com sucesso!\n");
-    exit(0);
-}
-
 // TESTESSSSSS
-void mensagem_campeao(int mov)
+void mensagem_campeao(int movimentos)
 {
+    char nome[100];
+    FILE *arquivo;
     // Encontrar a posição do agente no tabuleiro
     int agente_linha, agente_coluna;
     for (int i = 0; i < Tamanho_tabuleiro; i++)
@@ -443,8 +412,80 @@ void mensagem_campeao(int mov)
     {
         system("cls");
         printf("\n\nParabéns, você conseguiu escapar com o ouro. \n\nAgora você já pode se matricular na cadeira de AED1 👍\n\n");
-        grava_partida(mov);
+
+        // cria o arquivo para armazenar os resultados
+        arquivo = fopen("resultados.txt", "a");
+
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo.\n");
+            return;
+        }
+
+        // pede o nome do jogador e salva no arquivo junto com o número de movimentos
+        printf("Parabéns, você completou o jogo em %d movimentos!\n", mov);
+        printf("Digite seu nome para salvar seu resultado: ");
+        scanf("%s", nome);
+        fprintf(arquivo, "%s: %d movimentos\n", nome, mov);
+
+        // fecha o arquivo
+        fclose(arquivo);
+
+        inicioMenu();
     }
+}
+
+typedef struct
+{
+    char name[50];
+    int moves;
+} Player;
+
+int compare_players(const void *a, const void *b)
+{
+    Player *p1 = (Player *)a;
+    Player *p2 = (Player *)b;
+    return p1->moves - p2->moves;
+}
+
+void print_ranking(Player *players, int num_players)
+{
+    printf("Ranking:\n");
+    for (int i = 0; i < num_players; i++)
+    {
+        printf("%s  %d\n", players[i].name, players[i].moves);
+    }
+}
+
+void read_ranking_file(const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Erro ao abrir o arquivo %s\n", filename);
+        return;
+    }
+
+    Player players[MAX_PLAYERS];
+    int num_players = 0;
+
+    char line[100];
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
+        char *name = strtok(line, ":");
+        char *moves_str = strtok(NULL, "\n");
+        int moves = atoi(moves_str);
+
+        Player player;
+        strcpy(player.name, name);
+        player.moves = moves;
+        players[num_players++] = player;
+    }
+
+    qsort(players, num_players, sizeof(Player), compare_players);
+    print_ranking(players, num_players);
+
+    fclose(file);
 }
 
 void mensagem(int *agente_linha, int *agente_coluna)
@@ -505,7 +546,7 @@ int main()
     printf("=============================\n");
     printf("------O Mundo de Wumpus------\n");
     printf("=============================\n\n");
-    printf("MENU:\n1- |Jogar|\n2- |Debug|\n3- |Ranking|\n4- |Sair|\n\nSua escolha:");
+    printf("MENU:\n1- |Jogar|\n2- |Ranking|\n3- |Debug|\n4- |Sair|\n\nSua escolha:");
     scanf("%d", &x);
     if (x < 1 || x > 4)
         do
@@ -516,13 +557,13 @@ int main()
     switch (x)
     {
     case 1: // opção de Jogar
-        
+
         printf("\n");
         iniciar_tabuleiro();
         mostrar_tabuleiro();
 
         while (1)
-        {  
+        {
             mover_agente();
             mover_monstro(&nova_linha, &nova_coluna);
             mostrar_tabuleiro();
@@ -533,58 +574,58 @@ int main()
                 printf("\nVocê está com o ouro. FUJA!\n\n");
             }
 
-             if (flecha == 1)
-    {
-        printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
-        scanf(" %c", &tiro);
-        if (tiro == 'S' || tiro == 's')
-        {
-            atirar_flecha();
-            flecha = 0;
-            printf("\nFlecha usada!");
-        }
-    }
+            if (flecha == 1)
+            {
+                printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
+                scanf(" %c", &tiro);
+                if (tiro == 'S' || tiro == 's')
+                {
+                    atirar_flecha();
+                    flecha = 0;
+                    printf("\nFlecha usada!");
+                }
+            }
         }
         break;
     case 2: // opção de Debug
+        read_ranking_file("resultados.txt");
+        break;
+    case 3: // opção Ranking
         printf("\n");
         iniciar_tabuleiro();
         mostrar_tabuleiroDEBUG();
 
-        while (2)
+        while (3)
         {
-            mover_agente(); 
+            mover_agente();
             mover_monstro(&nova_linha, &nova_coluna);
             mostrar_tabuleiroDEBUG();
             mensagem(&agente_linha, &agente_coluna);
             mensagem_campeao(mov);
-             
-             if (encontrou_ouro == 1)
+
+            if (encontrou_ouro == 1)
             {
                 printf("\nVocê está com o ouro. FUJA!");
             }
 
-             if (flecha == 1)
-    {
-        printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
-        scanf(" %c", &tiro);
-        if (tiro == 'S' || tiro == 's')
-        {
-            atirar_flecha();
-            flecha = 0;
-            printf("\nFlecha usada!");
+            if (flecha == 1)
+            {
+                printf("\nVocê tem uma Flecha. Use com responsabilidade! (S/N)");
+                scanf(" %c", &tiro);
+                if (tiro == 'S' || tiro == 's')
+                {
+                    atirar_flecha();
+                    flecha = 0;
+                    printf("\nFlecha usada!");
+                }
+            }
         }
-    }
-
-        }
-        break;
-    case 3: // opção Ranking
-        return 0;
         break;
     case 4:
         printf("\n");
-        return 0; // fecha o Jogo
+        return 0;
         break;
     }
+
     return 0;
 }
